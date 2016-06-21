@@ -19,12 +19,14 @@
 			</section>
 			<footer class="footer"></footer>
 		</section>
+		<div id="el_add"></div>
 		<footer class="info">
 			<p>Double-click to edit a todo</p>
 			<p>Written by <a href="https://github.com/addyosmani">Addy Osmani</a></p>
 			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
 		</footer>
-		<script type="text/template" id="item-template">
+
+		<script type="text/x-handlebars-template" id="item-template">
 			<div class="view">
 				<input class="toggle" type="checkbox" <%= completed ? 'checked' : '' %>>
 				<label><%- title %></label>
@@ -32,33 +34,61 @@
 			</div>
 			<input class="edit" value="<%- title %>">
 		</script>
-		<script type="text/template" id="stats-template">
-			<span class="todo-count"><strong><%= remaining %></strong> <%= remaining === 1 ? 'item' : 'items' %> left</span>
-			<ul class="filters">
-				<li>
-					<a class="selected" href="#/">All</a>
-				</li>
-				<li>
-					<a href="#/active">Active</a>
-				</li>
-				<li>
-					<a href="#/completed">Completed</a>
-				</li>
+
+		<!-- we can make this into a handlebars template -> -->
+		<!-- CHANGED: Changed jQuery tags into underscore tags -->
+		<!-- ADDED: the if statement in place of {{ploral}} by using my new knowledge of the built-in if helper in Handlebars. This keeps HTML variables (e.g. "items" and "item") with the HTML and JS variables with the JS. -->
+		<!-- CHANGED: Handlebars can deal with if statements like the one that starts on line 47 (after the </ul> tag). It deals with these through the built-in helpers in Handlebars. An else tag could also be added to signal there are no completed tasks, but this won't be added here. -->
+		<!-- ADDED: List items, one for each of the buttons: All, Active, Completed. -->
+		<!-- ADDED: Handlebar paths, i.e. {{number}} and parameter-value pairs to the hash in app-view.js -->
+		<!-- Research the meaning of hash, and be clear what the hash is. Is it referring to the object that holds the parameter-value pairs or is it referring to the render function, or is referring to something else entirely?-->
+
+		<script type="x-handlebars-template" id="stats-template">
+
+			<span class="todo-count"><strong>{{ remaining }}</strong>
+			{{#if bPloral}}
+				items
+			{{else}}
+				item
+			{{/if}}
+			 left</span>
+			<ul class="filters" id="filtersId">
+				<li><a class="selected" href="#/">{{first}}</a></li>
+				<li><a href="#/{{linktwo}}">{{second}}</a></li>
+				<li><a href="#/{{linkthree}}">{{third}}</a></li>
 			</ul>
-			<% if (completed) { %>
-			<button class="clear-completed">Clear completed</button>
-			<% } %>
+			{{#if completed }}
+				<button class="clear-completed">Clear Completed</button>
+			{{/if}}
+
 		</script>
+
+		<!-- i'm trying to replace {{ number }} in the list item tags in a handlebars template with values from an object (All, Active, Completed) (i.e. the model by using this.model) and then take the html that results from this and have it be placed in the document in the correct place (the <ul> tag with the id filtersId) when the render function in todo-view runs -->
+
 		<script src="node_modules/todomvc-common/base.js"></script>
 		<script src="node_modules/jquery/dist/jquery.js"></script>
 		<script src="node_modules/underscore/underscore.js"></script>
 		<script src="node_modules/backbone/backbone.js"></script>
+		<!-- getting to use handlebars -->
+		<script src="node_modules/handlebars/dist/handlebars.js"></script>
+		<!-- end of block -->
 		<script src="node_modules/backbone.localstorage/backbone.localStorage.js"></script>
+
 		<script src="js/models/todo.js"></script>
 		<script src="js/collections/todos.js"></script>
 		<script src="js/views/todo-view.js"></script>
 		<script src="js/views/app-view.js"></script>
 		<script src="js/routers/router.js"></script>
 		<script src="js/app.js"></script>
+
 	</body>
 </html>
+
+
+
+
+
+
+
+
+

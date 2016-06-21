@@ -14,8 +14,11 @@ var app = app || {};
 		// the App already present in the HTML.
 		el: '.todoapp',
 
+
 		// Our template for the line of statistics at the bottom of the app.
-		statsTemplate: _.template($('#stats-template').html()),
+		// CHANGED: Now compiling with Handlebars instead of with underscore.
+			// the argument inside compile is the source
+		statsTemplate: Handlebars.compile( $("#stats-template").html() ),
 
 		// Delegated events for creating new items, and clearing completed ones.
 		events: {
@@ -52,14 +55,31 @@ var app = app || {};
 			var completed = app.todos.completed().length;
 			var remaining = app.todos.remaining().length;
 
+
 			if (app.todos.length) {
 				this.$main.show();
 				this.$footer.show();
 
-				this.$footer.html(this.statsTemplate({
-					completed: completed,
-					remaining: remaining
-				}));
+				var htmlStatsTemplate = this.statsTemplate(
+					{
+						completed: completed,
+						remaining: remaining,
+						// ADDED: parameter bPloral and given it a Boolean value which is true if remaining is not 1, i.e. it is more than one
+						bPloral: 1 !== remaining,
+						// ADDED: parameter-value pairs to the hash in app-view.js (i.e. in here)
+						first: "All",
+						second: "Active",
+						third: "Completed",
+						linktwo: "active",
+						linkthree: "completed"
+						// maybe use define linktwo: second.toLowerCase()
+						// a way to have less parameters here would be cute
+					}
+				);
+
+				this.$footer.html(
+					htmlStatsTemplate
+				);
 
 				this.$('.filters li a')
 					.removeClass('selected')
